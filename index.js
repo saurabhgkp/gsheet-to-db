@@ -1,236 +1,278 @@
-(exports.getAllData = async (e, l) => {
-  try {
-    const o = (
-      await e.googleSheets.spreadsheets.values.get({
-        auth: e.auth,
-        spreadsheetId: e.sheetId,
-        range: e.sheetName,
-      })
-    ).data.values;
-    var t = o[0].length,
-      s = o.length,
-      a = "";
-    for (let e = 0; e < t; e++) a = [...a, o[0][e]];
-    var u = [];
-    for (let e = 1; e < s; e++)
-      for (let l = 0; l < t; l++) u.push([a[l], o[e][l]]);
-    var n = [],
-      r = [],
-      h = 0;
-    for (let e = 0; e < u.length; e++)
-      h++,
-        n.push(u[e]),
-        h == t && (r.push(Object.fromEntries(n)), (n = []), (h = 0));
-    return l
-      .status(200)
-      .json({ Status: 1, Message: "Fetched Successfully", Data: r });
-  } catch (e) {
-    console.log("error");
+const { google } = require("googleapis");
+
+class Gsheet {
+
+  constructor(keyFile, spreadsheetId, range) {
+    this.authG = {
+      auth: new google.auth.GoogleAuth({
+        keyFile: keyFile,// "./exam-35.json",
+        scopes: "https://www.googleapis.com/auth/spreadsheets",
+      }),
+      spreadsheetId: spreadsheetId,//"1JmpRfmEfSdVAxAu2SRvzsnswI1-lnHNbts-3F_1xtlg",
+      range: range //"pcdb",
+    }
+    this.auth = new google.auth.GoogleAuth({
+      keyFile: keyFile,// "./exam-35.json",
+      scopes: "https://www.googleapis.com/auth/spreadsheets",
+    }),
+      this.spreadsheetId = spreadsheetId
+    this.range = range
+    this.googleSheets = google.sheets({ version: "v4", auth: async () => await auth.getClient() });
+    // this.getRows = getRows
   }
-}),
-  (exports.getDataById = async (e, l) => {
-    const { id: t } = e.query;
-    try {
-      const o = (
-        await e.googleSheets.spreadsheets.values.get({
-          auth: e.auth,
-          spreadsheetId: e.sheetId,
-          range: e.sheetName,
-        })
-      ).data.values;
-      var s = o[0].length,
-        a = (o.length, "");
-      for (let e = 0; e < s; e++) a = [...a, o[0][e]];
-      var u = [];
-      for (let e = 0; e < s; e++) u.push([a[e], o[t][e]]);
-      var n = [],
-        r = [],
-        h = 0;
-      for (let e = 0; e < u.length; e++)
-        h++,
-          n.push(u[e]),
-          h == s && (r.push(Object.fromEntries(n)), (n = []), (h = 0));
-      return l
-        .status(200)
-        .json({ Status: 1, Message: "Fetched Successfully", Data: r });
-    } catch (e) {
-      console.log("error");
+
+
+  async findAll() {
+    const getRows = await this.googleSheets.spreadsheets.values.get(this.authG);
+
+    const obj = getRows.data.values;
+
+    var width = obj[0].length;
+
+    var depth = obj.length;
+    // console.log(width, depth);
+
+    var keys = "";
+    for (let i = 0; i < width; i++) {
+      keys = [...keys, obj[0][i]];
     }
-  }),
-  (exports.updateById = async (e, l) => {
-    try {
-      const { id: t } = e.query,
-        {
-          A: s = t,
-          B: a = null,
-          C: u = null,
-          D: n = null,
-          E: r = null,
-          F: h = null,
-          G: o = null,
-          H: d = null,
-          I: c = null,
-          J: g = null,
-          K: p = null,
-          L: I = null,
-          M: y = null,
-          N: v = null,
-          O: i = null,
-          P: S = null,
-          Q: f = null,
-          R: E = null,
-          S: D = null,
-          T: N = null,
-          U: m = null,
-          V: $ = null,
-          W: j = null,
-          X: M = null,
-          Y: w = null,
-          Z: O = null,
-        } = e.body,
-        R = parseInt(s);
-      await e.googleSheets.spreadsheets.values.update({
-        auth: e.auth,
-        spreadsheetId: e.sheetId,
-        valueInputOption: "USER_ENTERED",
-        range: `${e.sheetName}!A${R + 1}:Z${R + 1}`,
-        resource: {
-          values: [
-            [
-              s,
-              a,
-              u,
-              n,
-              r,
-              h,
-              o,
-              d,
-              c,
-              g,
-              p,
-              I,
-              y,
-              v,
-              i,
-              S,
-              f,
-              E,
-              D,
-              N,
-              m,
-              $,
-              j,
-              M,
-              w,
-              O,
-            ],
-          ],
-        },
-      });
-      return l
-        .status(200)
-        .json({ status: 1, Message: `Successfully Updated With ID ${t}` });
-    } catch (e) {
-      console.log("error");
+    var values = [];
+    for (let i = 1; i < depth; i++) {
+      for (let j = 0; j < width; j++) {
+        values.push([keys[j], obj[i][j]]);
+      }
     }
-  }),
-  (exports.deleteById = async (e, l) => {
-    const { id: t } = e.query,
-      s = parseInt(t);
-    try {
-      await e.googleSheets.spreadsheets.values.clear({
-        auth: e.auth,
-        spreadsheetId: e.sheetId,
-        range: `${e.sheetName}!A${s + 1}:Z${s + 1}`,
-      });
-      return l
-        .status(200)
-        .json({ status: 1, Message: `deleted successful ${t} ` });
-    } catch (e) {
-      console.log("error");
+
+    var gg = [];
+    var finalData = [];
+
+    var flag = 0;
+
+    for (let k = 0; k < values.length; k++) {
+      flag++;
+
+      gg.push(values[k]);
+
+      if (flag == width) {
+        finalData.push(Object.fromEntries(gg));
+        gg = [];
+        flag = 0;
+      }
     }
-  }),
-  (exports.addData = async (e, l) => {
-    var t = (
-      await e.googleSheets.spreadsheets.values.get({
-        auth: e.auth,
-        spreadsheetId: e.sheetId,
-        range: e.sheetName,
-      })
-    ).data.values.length;
+    return finalData
+
+  }
+
+  async findById(id) {
+
+    // Read rows from spreadsheet
+    const getRows = await this.googleSheets.spreadsheets.values.get(this.authG);
+    // res.send(getRows.data.values);
+    const obj = getRows.data.values;
+
+    var width = obj[0].length;
+
+    var depth = obj.length;
+    // console.log(width, depth);
+
+    var keys = "";
+    for (let i = 0; i < width; i++) {
+      keys = [...keys, obj[0][i]];
+    }
+    var values = [];
+    // for (let i = 1; i < depth; i++) {
+    for (let j = 0; j < width; j++) {
+      console.log(id, "<===id", keys[j], obj[id])
+      values.push([keys[j], obj[id][j]]);
+    }
+    // }
+
+    var gg = [];
+    var finalData = [];
+
+    var flag = 0;
+
+    for (let k = 0; k < values.length; k++) {
+      flag++;
+
+      gg.push(values[k]);
+
+      if (flag == width) {
+        finalData.push(Object.fromEntries(gg));
+        gg = [];
+        flag = 0;
+      }
+    }
+    return finalData
+    // .json({ Data: finalData });
+    // return res.send(finalData);
+
+  }
+
+  async create(data) {
+    // Write row(s) to spreadsheet   headerKey
+
     const {
-      A: s = t,
-      B: a = null,
-      C: u = null,
-      D: n = null,
-      E: r = null,
-      F: h = null,
-      G: o = null,
-      H: d = null,
-      I: c = null,
-      J: g = null,
-      K: p = null,
-      L: I = null,
-      M: y = null,
-      N: v = null,
-      O: i = null,
-      P: S = null,
-      Q: f = null,
-      R: E = null,
-      S: D = null,
-      T: N = null,
-      U: m = null,
-      V: $ = null,
-      W: j = null,
-      X: M = null,
-      Y: w = null,
-      Z: O = null,
-    } = e.body;
-    try {
-      return (
-        await e.googleSheets.spreadsheets.values.append({
-          auth: e.auth,
-          spreadsheetId: e.sheetId,
-          range: e.sheetName,
-          valueInputOption: "USER_ENTERED",
-          resource: {
-            values: [
-              [
-                s,
-                a,
-                u,
-                n,
-                r,
-                h,
-                o,
-                d,
-                c,
-                g,
-                p,
-                I,
-                y,
-                v,
-                i,
-                S,
-                f,
-                E,
-                D,
-                N,
-                m,
-                $,
-                j,
-                M,
-                w,
-                O,
-              ],
-            ],
-          },
-        }),
-        l
-          .status(200)
-          .json({ status: 1, Message: `Successfully submitted! With ID ${t}` })
-      );
-    } catch (e) {
-      console.log("error");
-    }
-  });
+      A = id,
+      B = null,
+      C = null,
+      D = null,
+      E = null,
+      F = null,
+      G = null,
+      H = null,
+      I = null,
+      J = null,
+      K = null,
+      L = null,
+      M = null,
+      N = null,
+      O = null,
+      P = null,
+      Q = null,
+      R = null,
+      S = null,
+      T = null,
+      U = null,
+      V = null,
+      W = null,
+      X = null,
+      Y = null,
+      Z = null,
+    } = data;
+
+    await this.googleSheets.spreadsheets.values.append({
+      auth: this.auth,
+      spreadsheetId: this.spreadsheetId,
+      range: this.range,
+      valueInputOption: "USER_ENTERED",
+      resource: {
+        values: [
+          [
+            A,
+            B,
+            C,
+            D,
+            E,
+            F,
+            G,
+            H,
+            I,
+            J,
+            K,
+            L,
+            M,
+            N,
+            O,
+            P,
+            Q,
+            R,
+            S,
+            T,
+            U,
+            V,
+            W,
+            X,
+            Y,
+            Z,
+          ],
+        ],
+      },
+    });
+    return res
+      .status(200)
+      .json({ Message: `Successfully submitted! With ID ${id}` });
+  }
+
+  async deleteById(id) {
+    const idd = parseInt(id);
+    //console.log(idd);
+
+    const response = await this.googleSheets.spreadsheets.values.clear({
+      auth: this.auth,
+      spreadsheetId: this.spreadsheetId,
+      range: `${this.range}!A${idd + 1}:F${idd + 1}`,
+    });
+    // res.send("deleted");
+    return res
+
+      .json({ Message: `deleted successful ${id} ` });
+    // return res.send(finalData);
+
+  }
+  async updateById(id, data) {
+
+    const {
+      A = id,
+      B = null,
+      C = null,
+      D = null,
+      E = null,
+      F = null,
+      G = null,
+      H = null,
+      I = null,
+      J = null,
+      K = null,
+      L = null,
+      M = null,
+      N = null,
+      O = null,
+      P = null,
+      Q = null,
+      R = null,
+      S = null,
+      T = null,
+      U = null,
+      V = null,
+      W = null,
+      X = null,
+      Y = null,
+      Z = null,
+    } = data;
+    const idd = parseInt(A);
+    const response = await this.googleSheets.spreadsheets.values.update({
+      auth: this.auth,
+      spreadsheetId: this.spreadsheetId,
+      valueInputOption: "USER_ENTERED",
+      range: `${this.range}!A${idd + 1}:Z${idd + 1}`,
+      resource: {
+        values: [
+          [
+            A,
+            B,
+            C,
+            D,
+            E,
+            F,
+            G,
+            H,
+            I,
+            J,
+            K,
+            L,
+            M,
+            N,
+            O,
+            P,
+            Q,
+            R,
+            S,
+            T,
+            U,
+            V,
+            W,
+            X,
+            Y,
+            Z,
+          ],
+        ],
+      },
+    });
+
+    return json({ Message: `Successfully Updated With ID ${id}` });
+  }
+
+}
+
+module.exports.Gsheet = Gsheet
