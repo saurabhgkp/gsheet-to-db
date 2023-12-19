@@ -5,20 +5,20 @@ class Gsheet {
   constructor(keyFile, spreadsheetId, range) {
     this.authG = {
       auth: new google.auth.GoogleAuth({
-        keyFile: keyFile,// "./exam-35.json",
+        keyFile: keyFile,
         scopes: "https://www.googleapis.com/auth/spreadsheets",
       }),
-      spreadsheetId: spreadsheetId,//"1JmpRfmEfSdVAxAu2SRvzsnswI1-lnHNbts-3F_1xtlg",
-      range: range //"pcdb",
+      spreadsheetId: spreadsheetId,
+      range: range
     }
     this.auth = new google.auth.GoogleAuth({
-      keyFile: keyFile,// "./exam-35.json",
+      keyFile: keyFile,
       scopes: "https://www.googleapis.com/auth/spreadsheets",
     }),
       this.spreadsheetId = spreadsheetId
     this.range = range
     this.googleSheets = google.sheets({ version: "v4", auth: async () => await auth.getClient() });
-    // this.getRows = getRows
+
   }
 
 
@@ -30,7 +30,6 @@ class Gsheet {
     var width = obj[0].length;
 
     var depth = obj.length;
-    // console.log(width, depth);
 
     var keys = "";
     for (let i = 0; i < width; i++) {
@@ -65,27 +64,24 @@ class Gsheet {
 
   async findById(id) {
 
-    // Read rows from spreadsheet
     const getRows = await this.googleSheets.spreadsheets.values.get(this.authG);
-    // res.send(getRows.data.values);
+
     const obj = getRows.data.values;
 
     var width = obj[0].length;
 
     var depth = obj.length;
-    // console.log(width, depth);
 
     var keys = "";
     for (let i = 0; i < width; i++) {
       keys = [...keys, obj[0][i]];
     }
     var values = [];
-    // for (let i = 1; i < depth; i++) {
     for (let j = 0; j < width; j++) {
       console.log(id, "<===id", keys[j], obj[id])
       values.push([keys[j], obj[id][j]]);
     }
-    // }
+
 
     var gg = [];
     var finalData = [];
@@ -104,13 +100,10 @@ class Gsheet {
       }
     }
     return finalData
-    // .json({ Data: finalData });
-    // return res.send(finalData);
 
   }
 
   async create(data) {
-    // Write row(s) to spreadsheet   headerKey
 
     const {
       A = id,
@@ -179,9 +172,7 @@ class Gsheet {
         ],
       },
     });
-    return res
-      .status(200)
-      .json({ Message: `Successfully submitted! With ID ${id}` });
+    return `Successfully submitted! With ID ${id}`
   }
 
   async deleteById(id) {
@@ -270,7 +261,7 @@ class Gsheet {
       },
     });
 
-    return json({ Message: `Successfully Updated With ID ${id}` });
+    return `Successfully Updated With ID ${id}`
   }
 
 }

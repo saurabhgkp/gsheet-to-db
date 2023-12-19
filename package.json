@@ -1,16 +1,16 @@
 {
   "name": "gsheet-to-db",
-  "version": "1.0.4",
+  "version": "2.0.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/saurabhgkp/gsheet-to-db"
   },
-   "description": "Use Google Sheets as a database perform all CRUD opraction",
+  "description": "Use Google Sheets as a database perform all CRUD opraction",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-   "keywords": [
+  "keywords": [
     "google",
     "sheets",
     "spreadsheet",
