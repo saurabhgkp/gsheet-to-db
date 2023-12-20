@@ -1,7 +1,10 @@
 
 # gsheet-to-db
- ####  Easy to use and implement
-gsheet-to-db will turn your sheets into a  **JSON API**, easy to integrate.
+ ## Example for gsheet-to-db GitHub repo link
+ https://github.com/saurabhgkp/gsheet-to-db-example
+
+  ####  Easy to use and implement
+SheetDB will turn your sheets into a  **JSON API**, easy to integrate with other tools and all programming languages.
 ## operations
 ####  You can read and edit your spreadsheet with GET, POST, PUT and DELETE requests with just a few lines of code.
 
@@ -73,20 +76,22 @@ const  gdata  =  new  Gsheet("./keyFile.json", "spreadsheetId", "sheetName")
 `"./keyFile.json"` 
  this keysFile you can get it from Google console developer
  
-`spreadsheetId`you can get from spreadsheet url for expamle 
+`spreadsheetId`you can get from spreadsheet URL for example 
 `https://docs.google.com/spreadsheets/d/`1JmpRfmEfSdVAxAu2SRvzsnswI1-ln-3F_1xtlg`/edit?pli=1#gid=0`
 here after /d/ and before /edit is your
  spreadsheetId ="1JmpRfmEfSdVAxAu2SRvzsnswI1-ln-3F_1xtlg"
  
- `sheetName` can find at the bottom of spreadsheets by default is something like "sheet1"
+ `sheet name` can be found at the bottom of spreadsheets by default is something like "sheet1"
  
 ` let  data3  =  await  gdata.create(data)`
-here data must be started from "B" not "A" for example "A" is for id 
+here data must be started from "B" not  "A". "A" is reserved for "id" 
+for example
 ```
 {
     "B":"herry",
     "C":"FullTime",
     "D":"$40,000"
+    ...
 }
 ```
 for any help, you can DM me on LinkedIn
