@@ -1,14 +1,13 @@
+
 # gsheet-to-db
-
-Use Google Sheets as a database perform all CRUD opraction
-
+ ####  Easy to use and implement
+SheetDB will turn your sheets into a  **JSON API**, easy to integrate with other tools and all programming languages.
 ## operations
-
-Get All Data, Get Data By Id ,insert Data , Update By Id And Delete Data By Id
+####  You can read and edit your spreadsheet with GET, POST, PUT and DELETE requests with just a few lines of code.
 
 ## FAQ
 
-#### In Google Sheet you have to set data in header vale by manually first Field must be an 'id' and remaining is upto you
+#### In Google Sheets you have to set data in header vale by manually first Field must be an 'id' and remaining is upto you
 
 | id            | Name    | Status   | Salary   |
 | ------------- | ------- | -------- | -------- |
@@ -17,7 +16,7 @@ Get All Data, Get Data By Id ,insert Data , Update By Id And Delete Data By Id
 | Example Color | herry   | FullTime | $40,000  |
 
 ```bash
-id |	 Name |    Status |	Salary
+ id |	 Name |    Status |	Salary
 this field Are Add by manually field
 may Different (As you Want 'id' is First Field !importent)
 
@@ -38,17 +37,9 @@ may Different (As you Want 'id' is First Field !importent)
 
 always use capital letters ===>
 Don't A, This is use for 'id' use B C D to the Z for passing data
-
-#### passing data in Query for API Like Updating, FindById and DeleteById
-
-```
-http://localhost:4000/googleSheet/updateById?id=2
-
-```
-
 ## prerequisite
 
-Activate Google Sheets API. Go to the google console developer and enable Google Sheets API.
+Activate Google Sheets API. Go to the Google console developer and enable Google Sheets API.
 https://console.cloud.google.com/apis/dashboard And get JSON key.
 DO NOT commit the JSON key! Add the file to .gitignore now and import it into
 the code! Or use environment variables.
@@ -65,70 +56,40 @@ Install my-project with npm
 Import
 
 ```bash
-  const gsheetdb = require("gsheetdb");
+const { Gsheet } =  require("gsheet-to-db")
 ```
 
-make a middleware function plz replace your credentials where ("sheetId",
-"sheetName","keyFile","scopes)
 
 ```bash
-  function org(req, res, next) {
-  req.sheetId = "**************************";
+const  gdata  =  new  Gsheet("./keyFile.json", "spreadsheetId", "sheetName")
 
-  req.sheetName = "Default Name";
-
-  req.auth = new google.auth.GoogleAuth({
-    keyFile: "./keyFile.json",
-    scopes: "https://www.googleapis.com/auth/spreadsheets",
-  });
-  req.googleSheets = google.sheets({
-    version: "v4",
-    auth: async () => await auth.getClient(),
-  });
-
-  next();
+ let  data1  =  await  gdata.findAll()
+ let  data2  =  await  gdata.findById(id)
+ let  data3  =  await  gdata.create(data)
+ let  data4  =  await  gdata.deleteById(id)
+ let  data5  =  await  gdata.updateById(id, data)
+```
+##  Code  Explanation
+`"./keyFile.json"` 
+ this keysFile you can get it from Google console developer
+ 
+`spreadsheetId`you can get from spreadsheet url for expamle 
+`https://docs.google.com/spreadsheets/d/`1JmpRfmEfSdVAxAu2SRvzsnswI1-ln-3F_1xtlg`/edit?pli=1#gid=0`
+here after /d/ and before /edit is your
+ spreadsheetId ="1JmpRfmEfSdVAxAu2SRvzsnswI1-ln-3F_1xtlg"
+ 
+ `sheetName` can find at the bottom of spreadsheets by default is something like "sheet1"
+ 
+` let  data3  =  await  gdata.create(data)`
+here data must be started from "B" not "A" for example "A" is for id 
+```
+{
+    "B":"herry",
+    "C":"FullTime",
+    "D":"$40,000"
 }
 ```
-
-## Code Look Like 'exemple'
-
-```bash
-const { google } = require("googleapis");
-var express = require("express");
-var router = express.Router();
-var gsheetDb = require("gsheet-to-db");
-
-function org(req, res, next) {
-  req.sheetId = "**************************";
-  req.sheetName = "Name of sheet";
-  req.auth = new google.auth.GoogleAuth({
-    keyFile: "./KeyFile.json",
-    scopes: "https://www.googleapis.com/auth/spreadsheets",
-  });
-  req.googleSheets = google.sheets({
-    version: "v4",
-    auth: async () => await auth.getClient(),
-  });
-
-  next();
-}
-
-router.post("/addData", org, gsheetDb.addData);
-
-router.get("/getAllData", org, gsheetDb.getAllData);
-
-// get data by id you have to pass id in query // 'url?id=4'
-router.get("/getDataById", org, gsheetDb.getDataById);
-
-// updating data by id you have to pass id in query // 'url?id=4'
-router.put("/updateById", org, gsheetDb.updateById);
-
-// delete row data by id you have to pass id in query // 'url?id=4'
-router.delete("/deleteById", org, gsheetDb.deleteById);
-
-module.exports = router;
-```
-
+for any help, you can DM me on LinkedIn
 ## 🔗 Links
 
 [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/saurabh-singh-841590192)
