@@ -1,7 +1,7 @@
 
 # gsheet-to-db
  ####  Easy to use and implement
-SheetDB will turn your sheets into a  **JSON API**, easy to integrate with other tools and all programming languages.
+gsheet-to-db will turn your sheets into a  **JSON API**, easy to integrate.
 ## operations
 ####  You can read and edit your spreadsheet with GET, POST, PUT and DELETE requests with just a few lines of code.
 
