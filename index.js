@@ -9,7 +9,7 @@ class Gsheet {
         scopes: "https://www.googleapis.com/auth/spreadsheets",
       }),
       spreadsheetId: spreadsheetId,
-      range: range
+      range: range,
     }
     this.auth = new google.auth.GoogleAuth({
       keyFile: keyFile,
@@ -18,9 +18,7 @@ class Gsheet {
       this.spreadsheetId = spreadsheetId
     this.range = range
     this.googleSheets = google.sheets({ version: "v4", auth: async () => await auth.getClient() });
-
   }
-
 
   async findAll() {
     const getRows = await this.googleSheets.spreadsheets.values.get(this.authG);
@@ -65,7 +63,6 @@ class Gsheet {
   async findById(id) {
 
     const getRows = await this.googleSheets.spreadsheets.values.get(this.authG);
-
     const obj = getRows.data.values;
 
     var width = obj[0].length;
@@ -78,7 +75,6 @@ class Gsheet {
     }
     var values = [];
     for (let j = 0; j < width; j++) {
-      console.log(id, "<===id", keys[j], obj[id])
       values.push([keys[j], obj[id][j]]);
     }
 
@@ -104,7 +100,9 @@ class Gsheet {
   }
 
   async create(data) {
-
+    const getRows = await this.googleSheets.spreadsheets.values.get(this.authG);
+    const obj = getRows.data.values;
+    var id = obj.length;
     const {
       A = id,
       B = null,
@@ -134,7 +132,7 @@ class Gsheet {
       Z = null,
     } = data;
 
-    await this.googleSheets.spreadsheets.values.append({
+    const response = await this.googleSheets.spreadsheets.values.append({
       auth: this.auth,
       spreadsheetId: this.spreadsheetId,
       range: this.range,
@@ -172,27 +170,20 @@ class Gsheet {
         ],
       },
     });
-    return `Successfully submitted! With ID ${id}`
+    return response
   }
 
   async deleteById(id) {
     const idd = parseInt(id);
-    //console.log(idd);
-
     const response = await this.googleSheets.spreadsheets.values.clear({
       auth: this.auth,
       spreadsheetId: this.spreadsheetId,
-      range: `${this.range}!A${idd + 1}:F${idd + 1}`,
+      range: `${this.range}!A${idd + 1}:Z${idd + 1}`,
     });
-    // res.send("deleted");
-    return res
-
-      .json({ Message: `deleted successful ${id} ` });
-    // return res.send(finalData);
+    return response
 
   }
   async updateById(id, data) {
-
     const {
       A = id,
       B = null,
@@ -260,8 +251,9 @@ class Gsheet {
         ],
       },
     });
+    if (response.status === 200) return response
+    else return "make sure capital letter start from  B,C,D as key in req.body"
 
-    return `Successfully Updated With ID ${id}`
   }
 
 }
