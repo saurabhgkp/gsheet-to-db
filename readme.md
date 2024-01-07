@@ -1,5 +1,6 @@
 
 # gsheet-to-db
+[![npm](https://img.shields.io/npm/dt/gsheet-to-db)](https://www.npmjs.com/package/gsheet-to-db)
  ## Example for gsheet-to-db GitHub repo link
  https://github.com/saurabhgkp/gsheet-to-db-example
 
