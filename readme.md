@@ -15,9 +15,9 @@ SheetDB will turn your sheets into a  **JSON API**, easy to integrate with other
 
 | id            | Name    | Status   | Salary   |
 | ------------- | ------- | -------- | -------- |
-| Example Color | Wilson  | FullTime | $40,000  |
-| Example Color | saurabh | FullTime | $120,000 |
-| Example Color | herry   | FullTime | $40,000  |
+| 1             | Wilson  | FullTime | $40,000  |
+| 2             | saurabh | FullTime | $120,000 |
+| 3             | herry   | FullTime | $40,000  |
 
 ```bash
  id |	 Name |    Status |	Salary
